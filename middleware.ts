@@ -1,6 +1,26 @@
-import { clerkMiddleware } from '@clerk/nextjs/server'
+import { clerkMiddleware, createRouteMatcher } from '@clerk/nextjs/server'
 
-export default clerkMiddleware()
+// Создание защиты для административных маршрутов
+const isAdmin = createRouteMatcher([
+  "/(api/admin)(.*)",
+  "/admin(.*)"
+]);
+
+export default clerkMiddleware({
+  // Защитить административные маршруты
+  publicRoutes: req => !isAdmin(req),
+  // Или альтернативный способ:
+  // beforeAuth: (req) => {
+  //   // Публичные маршруты доступны без аутентификации
+  //   return false;
+  // },
+  // afterAuth: (auth, req) => {
+  //   // Защита административных маршрутов
+  //   if (isAdmin(req) && (!auth.userId || auth.userId !== process.env.ADMIN_USER_ID)) {
+  //     return Response.redirect(new URL("/sign-in", req.url));
+  //   }
+  // }
+});
 
 export const config = {
   matcher: [
