@@ -1,8 +1,8 @@
-import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { connectToDatabase } from '@/lib/mongodb';
 import { getUserEmail } from '@/lib/clerk';
 import { AuthApproval, PendingRequest } from '@/lib/types';
-import { auth } from '@clerk/nextjs/server';
+import { NextResponse } from 'next/server';
 
 const appNameMap: Record<string, string> = {
   weather: 'Погода',
@@ -12,8 +12,13 @@ const appNameMap: Record<string, string> = {
 export async function GET() {
   const { userId } = auth();
 
-  if (!userId || userId !== process.env.ADMIN_USER_ID) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+  // Усиленная проверка авторизации
+  if (!userId) {
+    return NextResponse.json({ error: 'Unauthorized, please sign in' }, { status: 401 });
+  }
+  
+  if (userId !== process.env.ADMIN_USER_ID) {
+    return NextResponse.json({ error: 'Access forbidden, admin only' }, { status: 403 });
   }
 
   try {
