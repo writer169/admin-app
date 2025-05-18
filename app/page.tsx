@@ -4,7 +4,7 @@ import PendingRequests from '@/components/PendingRequests';
 import AdminAuth from '@/components/AdminAuth';
 
 export default async function Home() {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId) {
     // Заменяем redirectToSignIn на компонент RedirectToSignIn
