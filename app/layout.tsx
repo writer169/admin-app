@@ -1,20 +1,23 @@
-import './globals.css';
+import type { Metadata } from 'next';
 import { ClerkProvider } from '@clerk/nextjs';
+import './globals.css';
 
-export const metadata = {
-  title: 'Администрирование авторизации',
-  description: 'Приложение для управления запросами на доступ',
+export const metadata: Metadata = {
+  title: 'Admin App',
+  description: 'Admin panel for authorization management',
 };
 
 export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <ClerkProvider>
-      <html lang="ru">
-        <body>{children}</body>
+      <html lang="en">
+        <body>
+          {children}
+        </body>
       </html>
     </ClerkProvider>
   );
