@@ -1,5 +1,4 @@
-import { auth } from '@clerk/nextjs';
-import { redirect } from 'next/navigation';
+import { auth, redirectToSignIn } from '@clerk/nextjs';
 import PendingRequests from '@/components/PendingRequests';
 import AdminAuth from '@/components/AdminAuth';
 
