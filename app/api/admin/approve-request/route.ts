@@ -3,7 +3,7 @@ import { connectToDatabase } from '@/lib/mongodb';
 import { auth } from '@clerk/nextjs/server';
 
 export async function POST(request: Request) {
-  const { userId } = auth();
+  const { userId } = await auth();
 
   if (!userId || userId !== process.env.ADMIN_USER_ID) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
