@@ -1,4 +1,5 @@
-import { auth, redirectToSignIn } from '@clerk/nextjs';
+import { auth } from '@clerk/nextjs/server';
+import { RedirectToSignIn } from '@clerk/nextjs';
 import PendingRequests from '@/components/PendingRequests';
 import AdminAuth from '@/components/AdminAuth';
 
@@ -6,7 +7,8 @@ export default async function Home() {
   const { userId } = auth();
 
   if (!userId) {
-    return redirectToSignIn({ returnBackUrl: '/' });
+    // Заменяем redirectToSignIn на компонент RedirectToSignIn
+    return <RedirectToSignIn />;
   }
 
   if (userId !== process.env.ADMIN_USER_ID) {
