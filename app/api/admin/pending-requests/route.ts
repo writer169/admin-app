@@ -10,13 +10,14 @@ const appNameMap: Record<string, string> = {
 };
 
 export async function GET() {
-  const { userId } = auth();
+  // Ждем разрешения Промиса, который возвращает auth()
+  const { userId } = await auth();
 
   // Усиленная проверка авторизации
   if (!userId) {
     return NextResponse.json({ error: 'Unauthorized, please sign in' }, { status: 401 });
   }
-  
+
   if (userId !== process.env.ADMIN_USER_ID) {
     return NextResponse.json({ error: 'Access forbidden, admin only' }, { status: 403 });
   }
