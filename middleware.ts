@@ -4,20 +4,18 @@ import { NextRequest } from 'next/server';
 // Создание защиты для административных маршрутов
 const isAdmin = createRouteMatcher([
   "/(api/admin)(.*)",
-  "/admin(.*)" // Предполагается, что у вас есть папка app/admin, которую нужно защитить
+  "/admin(.*)"
 ]);
 
-export default clerkMiddleware((auth, req) => {
+// Помечаем колбэк middleware как async, так как внутри используем await auth()
+export default clerkMiddleware(async (auth, req) => {
   // Если маршрут является админским, защищаем его
   if (isAdmin(req)) {
-    // auth().protect() перенаправит пользователя на страницу входа
-    // если он не аутентифицирован.
-    // Если вам нужна проверка на конкретную роль (например, 'admin'),
-    // можно использовать auth().protect({ role: 'admin' });
-    // или после auth().protect() проверить auth.userId
-    // и другие свойства пользователя, если нужна более сложная логика
-    // проверки прав администратора.
-    auth().protect();
+    // Ждем разрешения Промиса, возвращаемого auth(), затем вызываем protect()
+    (await auth()).protect(); // <-- ИСПРАВЛЕНИЕ ЗДЕСЬ
+    // Или более читаемо:
+    // const authObj = await auth();
+    // authObj.protect();
   }
 
   // Маршруты, которые НЕ являются админскими и при этом попадают под config.matcher,
@@ -28,13 +26,10 @@ export default clerkMiddleware((auth, req) => {
 export const config = {
   matcher: [
     // Match all routes except static files and /_next
-    // Соответствует всем маршрутам, кроме статических файлов и служебных Next.js (/_next)
     '/((?!.*\\..*|_next).*)',
     // Explicitly match the root route
-    // Явно соответствует корневому маршруту '/'
     '/',
     // Always run for API and tRPC routes
-    // Всегда запускать для API и tRPC маршрутов
     '/(api|trpc)(.*)',
   ],
 };
